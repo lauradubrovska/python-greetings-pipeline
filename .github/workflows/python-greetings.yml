@@ -95,3 +95,36 @@ jobs:
           npm_config_cache: ${{ github.workspace }}/tests/.npm-cache
         run: |
           npm run greetings -- greetings_dev
+
+  deploy-to-stg:
+    runs-on: self-hosted
+    needs: tests-on-dev
+
+    steps:
+      - name: Deploying to STG
+        run: echo "Deploying to STG..."
+
+      - name: Checkout pipeline repo
+        uses: actions/checkout@v4
+
+      - name: Checkout python-greetings repo
+        uses: actions/checkout@v4
+        with:
+          repository: mtararujs/python-greetings
+          path: python-greetings
+
+      - name: Setup Python env
+        working-directory: python-greetings
+        run: |
+          python3 -m venv venv
+          ./venv/bin/python -m pip install -r requirements.txt
+
+      - name: Stop old STG app
+        working-directory: python-greetings
+        run: |
+          pm2 delete greetings-app-stg || true
+
+      - name: Start STG app
+        working-directory: python-greetings
+        run: |
+          pm2 start app.py --name greetings-app-stg --interpreter ./venv/bin/python -- --port 7002
