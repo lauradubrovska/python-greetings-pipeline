@@ -1,0 +1,21 @@
+name: Install Python dependencies
+description: Create virtual environment and install python dependencies
+
+inputs:
+  working-directory:
+    description: Directory where python-greetings repo is checked out
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Installing dependencies
+      shell: bash
+      run: echo "Installing all required dependencies..."
+
+    - name: Setup Python env
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        python3 -m venv venv
+        ./venv/bin/python -m pip install -r requirements.txt
