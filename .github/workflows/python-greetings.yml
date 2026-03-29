@@ -6,302 +6,96 @@ on:
 jobs:
   install-pip-deps:
     runs-on: self-hosted
-
     steps:
-      - name: Installing dependencies
-        run: echo "Installing all required dependencies..."
-
-      - name: Checkout pipeline repo
-        uses: actions/checkout@v4
-
-      - name: Checkout python-greetings repo
-        uses: actions/checkout@v4
+      - name: Install pip dependencies
+        uses: ./.github/actions/setup-python-env
         with:
-          repository: mtararujs/python-greetings
-          path: python-greetings
-
-      - name: Setup Python env
-        working-directory: python-greetings
-        run: |
-          python3 -m venv venv
-          ./venv/bin/python -m pip install -r requirements.txt
+          repo-path: python-greetings
 
   deploy-to-dev:
     runs-on: self-hosted
     needs: install-pip-deps
-
     steps:
-      - name: Deploying to DEV
-        run: echo "Deploying to DEV..."
-
-      - name: Checkout pipeline repo
-        uses: actions/checkout@v4
-
-      - name: Checkout python-greetings repo
-        uses: actions/checkout@v4
+      - name: Deploy to dev
+        uses: ./.github/actions/deploy-greetings
         with:
-          repository: mtararujs/python-greetings
-          path: python-greetings
-
-      - name: Setup Python env
-        working-directory: python-greetings
-        run: |
-          python3 -m venv venv
-          ./venv/bin/python -m pip install -r requirements.txt
-
-      - name: Stop old DEV app
-        working-directory: python-greetings
-        run: |
-          pm2 delete greetings-app-dev || true
-
-      - name: Start DEV app
-        working-directory: python-greetings
-        run: |
-          pm2 start app.py --name greetings-app-dev --interpreter ./venv/bin/python -- --port 7001
+          env-name: dev
+          port: 7001
+          repo-path: python-greetings
 
   tests-on-dev:
     runs-on: self-hosted
     needs: deploy-to-dev
-
     steps:
-      - name: Testing DEV
-        run: echo "Running tests on DEV..."
-
-      - name: Checkout pipeline repo
-        uses: actions/checkout@v4
-
-      - name: Checkout test repo
-        uses: actions/checkout@v4
+      - name: Tests on dev
+        uses: ./.github/actions/test-greetings
         with:
-          repository: mtararujs/course-js-api-framework
-          path: tests
-
-      - name: Prepare local npm cache
-        working-directory: tests
-        run: |
-          mkdir -p .npm-cache
-
-      - name: Install npm deps
-        working-directory: tests
-        env:
-          npm_config_cache: ${{ github.workspace }}/tests/.npm-cache
-        run: |
-          npm install
-
-      - name: Run DEV tests
-        working-directory: tests
-        env:
-          BASE_URL: http://localhost:7001
-          npm_config_cache: ${{ github.workspace }}/tests/.npm-cache
-        run: |
-          npm run greetings -- greetings_dev
+          env-name: dev
+          base-url: http://localhost:7001
+          repo-path: tests
 
   deploy-to-stg:
     runs-on: self-hosted
     needs: tests-on-dev
-
     steps:
-      - name: Deploying to STG
-        run: echo "Deploying to STG..."
-
-      - name: Checkout pipeline repo
-        uses: actions/checkout@v4
-
-      - name: Checkout python-greetings repo
-        uses: actions/checkout@v4
+      - name: Deploy to stg
+        uses: ./.github/actions/deploy-greetings
         with:
-          repository: mtararujs/python-greetings
-          path: python-greetings
-
-      - name: Setup Python env
-        working-directory: python-greetings
-        run: |
-          python3 -m venv venv
-          ./venv/bin/python -m pip install -r requirements.txt
-
-      - name: Stop old STG app
-        working-directory: python-greetings
-        run: |
-          pm2 delete greetings-app-stg || true
-
-      - name: Start STG app
-        working-directory: python-greetings
-        run: |
-          pm2 start app.py --name greetings-app-stg --interpreter ./venv/bin/python -- --port 7002
+          env-name: stg
+          port: 7002
+          repo-path: python-greetings
 
   tests-on-stg:
     runs-on: self-hosted
     needs: deploy-to-stg
-
     steps:
-      - name: Testing STG
-        run: echo "Running tests on STG..."
-
-      - name: Checkout pipeline repo
-        uses: actions/checkout@v4
-
-      - name: Checkout test repo
-        uses: actions/checkout@v4
+      - name: Tests on stg
+        uses: ./.github/actions/test-greetings
         with:
-          repository: mtararujs/course-js-api-framework
-          path: tests
-
-      - name: Prepare local npm cache
-        working-directory: tests
-        run: |
-          mkdir -p .npm-cache
-
-      - name: Install npm deps
-        working-directory: tests
-        env:
-          npm_config_cache: ${{ github.workspace }}/tests/.npm-cache
-        run: |
-          npm install
-
-      - name: Run STG tests
-        working-directory: tests
-        env:
-          BASE_URL: http://localhost:7002
-          npm_config_cache: ${{ github.workspace }}/tests/.npm-cache
-        run: |
-          npm run greetings -- greetings_stg
+          env-name: stg
+          base-url: http://localhost:7002
+          repo-path: tests
 
   deploy-to-preprod:
     runs-on: self-hosted
     needs: tests-on-stg
-
     steps:
-      - name: Deploying to PREPROD
-        run: echo "Deploying to PREPROD..."
-
-      - name: Checkout pipeline repo
-        uses: actions/checkout@v4
-
-      - name: Checkout python-greetings repo
-        uses: actions/checkout@v4
+      - name: Deploy to preprod
+        uses: ./.github/actions/deploy-greetings
         with:
-          repository: mtararujs/python-greetings
-          path: python-greetings
-
-      - name: Setup Python env
-        working-directory: python-greetings
-        run: |
-          python3 -m venv venv
-          ./venv/bin/python -m pip install -r requirements.txt
-
-      - name: Stop old PREPROD app
-        working-directory: python-greetings
-        run: |
-          pm2 delete greetings-app-preprod || true
-
-      - name: Start PREPROD app
-        working-directory: python-greetings
-        run: |
-          pm2 start app.py --name greetings-app-preprod --interpreter ./venv/bin/python -- --port 7003
+          env-name: preprod
+          port: 7003
+          repo-path: python-greetings
 
   tests-on-preprod:
     runs-on: self-hosted
     needs: deploy-to-preprod
-
     steps:
-      - name: Testing PREPROD
-        run: echo "Running tests on PREPROD..."
-
-      - name: Checkout pipeline repo
-        uses: actions/checkout@v4
-
-      - name: Checkout test repo
-        uses: actions/checkout@v4
+      - name: Tests on preprod
+        uses: ./.github/actions/test-greetings
         with:
-          repository: mtararujs/course-js-api-framework
-          path: tests
-
-      - name: Prepare local npm cache
-        working-directory: tests
-        run: |
-          mkdir -p .npm-cache
-
-      - name: Install npm deps
-        working-directory: tests
-        env:
-          npm_config_cache: ${{ github.workspace }}/tests/.npm-cache
-        run: |
-          npm install
-
-      - name: Run PREPROD tests
-        working-directory: tests
-        env:
-          BASE_URL: http://localhost:7003
-          npm_config_cache: ${{ github.workspace }}/tests/.npm-cache
-        run: |
-          npm run greetings -- greetings_preprod
+          env-name: preprod
+          base-url: http://localhost:7003
+          repo-path: tests
 
   deploy-to-prod:
     runs-on: self-hosted
     needs: tests-on-preprod
-
     steps:
-      - name: Deploying to PROD
-        run: echo "Deploying to PROD..."
-
-      - name: Checkout pipeline repo
-        uses: actions/checkout@v4
-
-      - name: Checkout python-greetings repo
-        uses: actions/checkout@v4
+      - name: Deploy to prod
+        uses: ./.github/actions/deploy-greetings
         with:
-          repository: mtararujs/python-greetings
-          path: python-greetings
-
-      - name: Setup Python env
-        working-directory: python-greetings
-        run: |
-          python3 -m venv venv
-          ./venv/bin/python -m pip install -r requirements.txt
-
-      - name: Stop old PROD app
-        working-directory: python-greetings
-        run: |
-          pm2 delete greetings-app-prod || true
-
-      - name: Start PROD app
-        working-directory: python-greetings
-        run: |
-          pm2 start app.py --name greetings-app-prod --interpreter ./venv/bin/python -- --port 7004
+          env-name: prod
+          port: 7004
+          repo-path: python-greetings
 
   tests-on-prod:
     runs-on: self-hosted
     needs: deploy-to-prod
-
     steps:
-      - name: Testing PROD
-        run: echo "Running tests on PROD..."
-
-      - name: Checkout pipeline repo
-        uses: actions/checkout@v4
-
-      - name: Checkout test repo
-        uses: actions/checkout@v4
+      - name: Tests on prod
+        uses: ./.github/actions/test-greetings
         with:
-          repository: mtararujs/course-js-api-framework
-          path: tests
-
-      - name: Prepare local npm cache
-        working-directory: tests
-        run: |
-          mkdir -p .npm-cache
-
-      - name: Install npm deps
-        working-directory: tests
-        env:
-          npm_config_cache: ${{ github.workspace }}/tests/.npm-cache
-        run: |
-          npm install
-
-      - name: Run PROD tests
-        working-directory: tests
-        env:
-          BASE_URL: http://localhost:7004
-          npm_config_cache: ${{ github.workspace }}/tests/.npm-cache
-        run: |
-          npm run greetings -- greetings_prod
+          env-name: prod
+          base-url: http://localhost:7004
+          repo-path: tests
