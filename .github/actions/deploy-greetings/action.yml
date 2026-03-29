@@ -17,7 +17,7 @@ runs:
   steps:
     - name: Deploying
       shell: bash
-      run: echo "Deploying to ${{ inputs.env-name | upper }}..."
+      run: echo "Deploying to ${{ inputs.env-name }}..."
 
     - name: Setup Python env
       shell: bash
