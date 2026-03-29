@@ -3,14 +3,14 @@ description: Stop old app and start python-greetings with pm2
 
 inputs:
   working-directory:
+    required: true
     description: Directory where python-greetings repo is checked out
-    required: true
   env-name:
+    required: true
     description: Environment name
-    required: true
   port:
-    description: App port
     required: true
+    description: App port
 
 runs:
   using: composite
