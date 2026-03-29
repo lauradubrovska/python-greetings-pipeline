@@ -198,3 +198,40 @@ jobs:
         working-directory: python-greetings
         run: |
           pm2 start app.py --name greetings-app-preprod --interpreter ./venv/bin/python -- --port 7003
+
+  tests-on-preprod:
+    runs-on: self-hosted
+    needs: deploy-to-preprod
+
+    steps:
+      - name: Testing PREPROD
+        run: echo "Running tests on PREPROD..."
+
+      - name: Checkout pipeline repo
+        uses: actions/checkout@v4
+
+      - name: Checkout test repo
+        uses: actions/checkout@v4
+        with:
+          repository: mtararujs/course-js-api-framework
+          path: tests
+
+      - name: Prepare local npm cache
+        working-directory: tests
+        run: |
+          mkdir -p .npm-cache
+
+      - name: Install npm deps
+        working-directory: tests
+        env:
+          npm_config_cache: ${{ github.workspace }}/tests/.npm-cache
+        run: |
+          npm install
+
+      - name: Run PREPROD tests
+        working-directory: tests
+        env:
+          BASE_URL: http://localhost:7003
+          npm_config_cache: ${{ github.workspace }}/tests/.npm-cache
+        run: |
+          npm run greetings -- greetings_preprod
