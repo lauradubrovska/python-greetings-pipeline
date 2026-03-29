@@ -76,8 +76,15 @@ jobs:
           repository: mtararujs/course-js-api-framework
           path: tests
 
+      - name: Prepare local npm cache
+        working-directory: tests
+        run: |
+          mkdir -p .npm-cache
+
       - name: Install npm deps
         working-directory: tests
+        env:
+          npm_config_cache: ${{ github.workspace }}/tests/.npm-cache
         run: |
           npm install
 
@@ -85,5 +92,6 @@ jobs:
         working-directory: tests
         env:
           BASE_URL: http://localhost:7001
+          npm_config_cache: ${{ github.workspace }}/tests/.npm-cache
         run: |
           npm run greetings -- greetings_dev
