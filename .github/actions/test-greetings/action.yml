@@ -1,51 +1,43 @@
 name: Test greetings app
-description: Run API tests against selected environment
+description: Install test deps and run greetings tests
 
 inputs:
+  working-directory:
+    description: Directory where test repo is checked out
+    required: true
   env-name:
     description: Environment name
     required: true
   base-url:
-    description: Base URL for API
-    required: true
-  repo-path:
-    description: Path where test repo will be checked out
+    description: Base URL for tested environment
     required: true
 
 runs:
   using: composite
   steps:
-    - name: Prepare test directory
+    - name: Print test stage
       shell: bash
-      run: |
-        mkdir -p "${{ inputs.repo-path }}"
-
-    - name: Checkout test repo
-      uses: actions/checkout@v4
-      with:
-        repository: mtararujs/course-js-api-framework
-        path: ${{ inputs.repo-path }}
+      run: echo "Running tests on ${{ inputs.env-name }} environment..."
 
     - name: Prepare local npm cache
       shell: bash
-      working-directory: ${{ inputs.repo-path }}
+      working-directory: ${{ inputs.working-directory }}
       run: |
         mkdir -p .npm-cache
 
-    - name: Install npm dependencies
+    - name: Install npm deps
       shell: bash
-      working-directory: ${{ inputs.repo-path }}
+      working-directory: ${{ inputs.working-directory }}
       env:
-        npm_config_cache: ${{ inputs.repo-path }}/.npm-cache
+        npm_config_cache: ${{ github.workspace }}/${{ inputs.working-directory }}/.npm-cache
       run: |
-        echo "Running tests on ${{ inputs.env-name }} environment..."
         npm install
 
-    - name: Run API tests
+    - name: Run tests
       shell: bash
-      working-directory: ${{ inputs.repo-path }}
+      working-directory: ${{ inputs.working-directory }}
       env:
         BASE_URL: ${{ inputs.base-url }}
-        npm_config_cache: ${{ inputs.repo-path }}/.npm-cache
+        npm_config_cache: ${{ github.workspace }}/${{ inputs.working-directory }}/.npm-cache
       run: |
-        npm run greetings
+        npm run greetings greetings_${{ inputs.env-name }}
