@@ -9,6 +9,11 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Prepare target directory
+      shell: bash
+      run: |
+        mkdir -p "${{ inputs.repo-path }}"
+
     - name: Checkout python-greetings repo
       uses: actions/checkout@v4
       with:
