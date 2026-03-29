@@ -10,6 +10,8 @@ jobs:
     steps:
       - name: Checkout pipeline repo
         uses: actions/checkout@v6
+        with:
+          path: main
 
       - name: Checkout python-greetings repo
         uses: actions/checkout@v6
@@ -18,7 +20,7 @@ jobs:
           path: python-greetings
 
       - name: Install pip dependencies
-        uses: ./.github/actions/install-python
+        uses: ./main/.github/actions/install-python
         with:
           working-directory: python-greetings
 
@@ -29,6 +31,8 @@ jobs:
     steps:
       - name: Checkout pipeline repo
         uses: actions/checkout@v6
+        with:
+          path: main
 
       - name: Checkout python-greetings repo
         uses: actions/checkout@v6
@@ -37,12 +41,12 @@ jobs:
           path: python-greetings-dev
 
       - name: Install pip dependencies for dev
-        uses: ./.github/actions/install-python
+        uses: ./main/.github/actions/install-python
         with:
           working-directory: python-greetings-dev
 
       - name: Deploy to dev
-        uses: ./.github/actions/deploy-greetings
+        uses: ./main/.github/actions/deploy-greetings
         with:
           working-directory: python-greetings-dev
           env-name: dev
@@ -55,6 +59,8 @@ jobs:
     steps:
       - name: Checkout pipeline repo
         uses: actions/checkout@v6
+        with:
+          path: main
 
       - name: Checkout test repo
         uses: actions/checkout@v6
@@ -63,7 +69,7 @@ jobs:
           path: tests-dev
 
       - name: Test dev
-        uses: ./.github/actions/test-greetings
+        uses: ./main/.github/actions/test-greetings
         with:
           working-directory: tests-dev
           env-name: dev
@@ -76,6 +82,8 @@ jobs:
     steps:
       - name: Checkout pipeline repo
         uses: actions/checkout@v6
+        with:
+          path: main
 
       - name: Checkout python-greetings repo
         uses: actions/checkout@v6
@@ -84,12 +92,12 @@ jobs:
           path: python-greetings-stg
 
       - name: Install pip dependencies for stg
-        uses: ./.github/actions/install-python
+        uses: ./main/.github/actions/install-python
         with:
           working-directory: python-greetings-stg
 
       - name: Deploy to stg
-        uses: ./.github/actions/deploy-greetings
+        uses: ./main/.github/actions/deploy-greetings
         with:
           working-directory: python-greetings-stg
           env-name: stg
@@ -102,6 +110,8 @@ jobs:
     steps:
       - name: Checkout pipeline repo
         uses: actions/checkout@v6
+        with:
+          path: main
 
       - name: Checkout test repo
         uses: actions/checkout@v6
@@ -110,7 +120,7 @@ jobs:
           path: tests-stg
 
       - name: Test stg
-        uses: ./.github/actions/test-greetings
+        uses: ./main/.github/actions/test-greetings
         with:
           working-directory: tests-stg
           env-name: stg
@@ -123,6 +133,8 @@ jobs:
     steps:
       - name: Checkout pipeline repo
         uses: actions/checkout@v6
+        with:
+          path: main
 
       - name: Checkout python-greetings repo
         uses: actions/checkout@v6
@@ -131,12 +143,12 @@ jobs:
           path: python-greetings-preprod
 
       - name: Install pip dependencies for preprod
-        uses: ./.github/actions/install-python
+        uses: ./main/.github/actions/install-python
         with:
           working-directory: python-greetings-preprod
 
       - name: Deploy to preprod
-        uses: ./.github/actions/deploy-greetings
+        uses: ./main/.github/actions/deploy-greetings
         with:
           working-directory: python-greetings-preprod
           env-name: preprod
@@ -149,6 +161,8 @@ jobs:
     steps:
       - name: Checkout pipeline repo
         uses: actions/checkout@v6
+        with:
+          path: main
 
       - name: Checkout test repo
         uses: actions/checkout@v6
@@ -157,7 +171,7 @@ jobs:
           path: tests-preprod
 
       - name: Test preprod
-        uses: ./.github/actions/test-greetings
+        uses: ./main/.github/actions/test-greetings
         with:
           working-directory: tests-preprod
           env-name: preprod
@@ -170,6 +184,8 @@ jobs:
     steps:
       - name: Checkout pipeline repo
         uses: actions/checkout@v6
+        with:
+          path: main
 
       - name: Checkout python-greetings repo
         uses: actions/checkout@v6
@@ -178,12 +194,12 @@ jobs:
           path: python-greetings-prod
 
       - name: Install pip dependencies for prod
-        uses: ./.github/actions/install-python
+        uses: ./main/.github/actions/install-python
         with:
           working-directory: python-greetings-prod
 
       - name: Deploy to prod
-        uses: ./.github/actions/deploy-greetings
+        uses: ./main/.github/actions/deploy-greetings
         with:
           working-directory: python-greetings-prod
           env-name: prod
@@ -196,6 +212,8 @@ jobs:
     steps:
       - name: Checkout pipeline repo
         uses: actions/checkout@v6
+        with:
+          path: main
 
       - name: Checkout test repo
         uses: actions/checkout@v6
@@ -204,7 +222,7 @@ jobs:
           path: tests-prod
 
       - name: Test prod
-        uses: ./.github/actions/test-greetings
+        uses: ./main/.github/actions/test-greetings
         with:
           working-directory: tests-prod
           env-name: prod
