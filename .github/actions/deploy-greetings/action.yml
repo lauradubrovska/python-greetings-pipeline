@@ -1,0 +1,45 @@
+name: Deploy greetings app
+description: Deploy python-greetings app to selected environment using PM2
+
+inputs:
+  env-name:
+    description: Environment name
+    required: true
+  port:
+    description: Port number
+    required: true
+  repo-path:
+    description: Path where python-greetings repo will be checked out
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout pipeline repo
+      uses: actions/checkout@v4
+
+    - name: Checkout python-greetings repo
+      uses: actions/checkout@v4
+      with:
+        repository: mtararujs/python-greetings
+        path: ${{ inputs.repo-path }}
+
+    - name: Setup Python environment
+      shell: bash
+      working-directory: ${{ inputs.repo-path }}
+      run: |
+        python3 -m venv venv
+        ./venv/bin/python -m pip install -r requirements.txt
+
+    - name: Stop existing app
+      shell: bash
+      working-directory: ${{ inputs.repo-path }}
+      run: |
+        echo "Deploying application to ${{ inputs.env-name }} environment..."
+        pm2 delete greetings-app-${{ inputs.env-name }} || true
+
+    - name: Start app
+      shell: bash
+      working-directory: ${{ inputs.repo-path }}
+      run: |
+        pm2 start app.py --name greetings-app-${{ inputs.env-name }} --interpreter ./venv/bin/python -- --port ${{ inputs.port }}
