@@ -1,0 +1,12 @@
+name: Python Greetings Pipeline
+
+on:
+  push:
+
+jobs:
+  install-pip-deps:
+    runs-on: self-hosted
+
+    steps:
+      - name: Print stage
+        run: echo "Installing all required dependencies..."
