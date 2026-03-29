@@ -1,0 +1,39 @@
+name: Deploy greetings app
+description: Stop old app and start python app with pm2
+
+inputs:
+  working-directory:
+    description: Directory where python-greetings repo is checked out
+    required: true
+  env-name:
+    description: Environment name
+    required: true
+  port:
+    description: Port number
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Deploying
+      shell: bash
+      run: echo "Deploying to ${{ inputs.env-name | upper }}..."
+
+    - name: Setup Python env
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        python3 -m venv venv
+        ./venv/bin/python -m pip install -r requirements.txt
+
+    - name: Stop old app
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        pm2 delete greetings-app-${{ inputs.env-name }} || true
+
+    - name: Start app
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        pm2 start app.py --name greetings-app-${{ inputs.env-name }} --interpreter ./venv/bin/python -- --port ${{ inputs.port }}
