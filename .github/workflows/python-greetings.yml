@@ -9,10 +9,11 @@ jobs:
     steps:
       - name: Checkout pipeline repo
         uses: actions/checkout@v4
+
       - name: Install pip dependencies
         uses: ./.github/actions/setup-python-env
         with:
-          repo-path: python-greetings-dev
+          repo-path: /Users/laura/greetings/python-greetings-dev
 
   deploy-to-dev:
     runs-on: self-hosted
@@ -20,12 +21,13 @@ jobs:
     steps:
       - name: Checkout pipeline repo
         uses: actions/checkout@v4
+
       - name: Deploy to dev
         uses: ./.github/actions/deploy-greetings
         with:
           env-name: dev
           port: 7001
-          repo-path: python-greetings-dev
+          repo-path: /Users/laura/greetings/python-greetings-dev
 
   tests-on-dev:
     runs-on: self-hosted
@@ -33,12 +35,13 @@ jobs:
     steps:
       - name: Checkout pipeline repo
         uses: actions/checkout@v4
+
       - name: Tests on dev
         uses: ./.github/actions/test-greetings
         with:
           env-name: dev
           base-url: http://localhost:7001
-          repo-path: tests-dev
+          repo-path: /Users/laura/greetings/tests-dev
 
   deploy-to-stg:
     runs-on: self-hosted
@@ -46,12 +49,13 @@ jobs:
     steps:
       - name: Checkout pipeline repo
         uses: actions/checkout@v4
+
       - name: Deploy to stg
         uses: ./.github/actions/deploy-greetings
         with:
           env-name: stg
           port: 7002
-          repo-path: python-greetings-stg
+          repo-path: /Users/laura/greetings/python-greetings-stg
 
   tests-on-stg:
     runs-on: self-hosted
@@ -59,12 +63,13 @@ jobs:
     steps:
       - name: Checkout pipeline repo
         uses: actions/checkout@v4
+
       - name: Tests on stg
         uses: ./.github/actions/test-greetings
         with:
           env-name: stg
           base-url: http://localhost:7002
-          repo-path: tests-stg
+          repo-path: /Users/laura/greetings/tests-stg
 
   deploy-to-preprod:
     runs-on: self-hosted
@@ -72,12 +77,13 @@ jobs:
     steps:
       - name: Checkout pipeline repo
         uses: actions/checkout@v4
+
       - name: Deploy to preprod
         uses: ./.github/actions/deploy-greetings
         with:
           env-name: preprod
           port: 7003
-          repo-path: python-greetings-preprod
+          repo-path: /Users/laura/greetings/python-greetings-preprod
 
   tests-on-preprod:
     runs-on: self-hosted
@@ -85,12 +91,13 @@ jobs:
     steps:
       - name: Checkout pipeline repo
         uses: actions/checkout@v4
+
       - name: Tests on preprod
         uses: ./.github/actions/test-greetings
         with:
           env-name: preprod
           base-url: http://localhost:7003
-          repo-path: tests-preprod
+          repo-path: /Users/laura/greetings/tests-preprod
 
   deploy-to-prod:
     runs-on: self-hosted
@@ -98,12 +105,13 @@ jobs:
     steps:
       - name: Checkout pipeline repo
         uses: actions/checkout@v4
+
       - name: Deploy to prod
         uses: ./.github/actions/deploy-greetings
         with:
           env-name: prod
           port: 7004
-          repo-path: python-greetings-prod
+          repo-path: /Users/laura/greetings/python-greetings-prod
 
   tests-on-prod:
     runs-on: self-hosted
@@ -111,9 +119,10 @@ jobs:
     steps:
       - name: Checkout pipeline repo
         uses: actions/checkout@v4
+
       - name: Tests on prod
         uses: ./.github/actions/test-greetings
         with:
           env-name: prod
           base-url: http://localhost:7004
-          repo-path: tests-prod
+          repo-path: /Users/laura/greetings/tests-prod
