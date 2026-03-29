@@ -2,6 +2,7 @@ name: Python Greetings Pipeline
 
 on:
   push:
+  workflow_dispatch:
 
 jobs:
   install-pip-deps:
