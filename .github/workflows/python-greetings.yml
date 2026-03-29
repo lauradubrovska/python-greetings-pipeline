@@ -83,5 +83,7 @@ jobs:
 
       - name: Run DEV tests
         working-directory: tests
+        env:
+          BASE_URL: http://localhost:7001
         run: |
-          BASE_URL=http://localhost:7001 npm run greetings greetings_dev
+          npm run greetings -- greetings_dev
