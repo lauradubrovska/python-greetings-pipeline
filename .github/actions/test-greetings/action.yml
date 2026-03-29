@@ -1,0 +1,43 @@
+name: Test greetings app
+description: Install npm dependencies and run greetings tests
+
+inputs:
+  working-directory:
+    description: Directory where test repo is checked out
+    required: true
+  env-name:
+    description: Environment name
+    required: true
+  base-url:
+    description: Base URL for target environment
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Testing
+      shell: bash
+      run: echo "Running tests on ${{ inputs.env-name }}..."
+
+    - name: Prepare local npm cache
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        mkdir -p .npm-cache
+
+    - name: Install npm deps
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        npm_config_cache: ${{ github.workspace }}/${{ inputs.working-directory }}/.npm-cache
+      run: |
+        npm install
+
+    - name: Run tests
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        BASE_URL: ${{ inputs.base-url }}
+        npm_config_cache: ${{ github.workspace }}/${{ inputs.working-directory }}/.npm-cache
+      run: |
+        npm run greetings -- greetings_${{ inputs.env-name }}
