@@ -1,0 +1,27 @@
+name: Setup Python environment
+description: Checkout python-greetings repository and install Python dependencies
+
+inputs:
+  repo-path:
+    description: Path where python-greetings repo will be checked out
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout pipeline repo
+      uses: actions/checkout@v4
+
+    - name: Checkout python-greetings repo
+      uses: actions/checkout@v4
+      with:
+        repository: mtararujs/python-greetings
+        path: ${{ inputs.repo-path }}
+
+    - name: Create virtual environment and install dependencies
+      shell: bash
+      working-directory: ${{ inputs.repo-path }}
+      run: |
+        echo "Installing all required dependencies..."
+        python3 -m venv venv
+        ./venv/bin/python -m pip install -r requirements.txt
