@@ -3,14 +3,14 @@ description: Install test deps and run greetings tests
 
 inputs:
   working-directory:
+    required: true
     description: Directory where test repo is checked out
-    required: true
   env-name:
+    required: true
     description: Environment name
-    required: true
   base-url:
-    description: Base URL for tested environment
     required: true
+    description: Base URL for tested environment
 
 runs:
   using: composite
