@@ -3,8 +3,8 @@ description: Create venv and install python-greetings dependencies
 
 inputs:
   working-directory:
-    description: Directory where python-greetings repo is checked out
     required: true
+    description: Directory where python-greetings repo is checked out
 
 runs:
   using: composite
